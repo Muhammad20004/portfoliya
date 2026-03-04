@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import User from "../models/user.js";
+import User from "../models/User.js";
 import { makePath, uploadBuffer, removeFile } from "../utils/storage.js";
 
 function canCreateRole(creatorRole, targetRole) {

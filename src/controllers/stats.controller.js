@@ -1,5 +1,5 @@
-import User from "../models/user.js";
-import Project from "../models/project.js";
+import User from "../models/User.js";
+import Project from "../models/Project.js";
 
 export async function dashboardStats(req, res) {
   const [

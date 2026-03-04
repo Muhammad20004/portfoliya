@@ -1,6 +1,6 @@
-import Project from "../models/project.js";
-import Review from "../models/review.js";
-import User from "../models/user.js";
+import Project from "../models/Project.js";
+import Review from "../models/Review.js";
+import User from "../models/User.js";
 
 import { makePath, uploadBuffer, removeFile } from "../utils/storage.js";
 

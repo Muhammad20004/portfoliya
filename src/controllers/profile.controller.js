@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import User from "../models/user.js";
+import User from "../models/User.js";
 
 export async function updateSocial(req, res) {
   const user = await User.findById(req.user._id);

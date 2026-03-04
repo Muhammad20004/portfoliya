@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 
-import User from "../models/user.js";
-import RefreshToken from "../models/refreshToken.js";
+import User from "../models/User.js";
+import RefreshToken from "../models/RefreshToken.js";
 
 import {
   signAccessToken,
