@@ -5,7 +5,7 @@ import { buildApp } from "./app.js";
 import { connectDB } from "./config/db.js";
 import { seedHeadIfNotExists } from "./utils/seedHead.js";
 
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+dns.setServers(["0.0.0.0"]);
 
 async function bootstrap() {
   const PORT = process.env.PORT || 8000;
