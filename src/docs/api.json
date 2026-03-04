@@ -1,0 +1,124 @@
+{
+  "base": "/api",
+  "auth": {
+    "POST /auth/login": {
+      "description": "Login (username/password) va access/refresh token qaytaradi",
+      "body": { "username": "string", "password": "string" },
+      "response": { "accessToken": "JWT", "refreshToken": "JWT", "user": "UserPublic" }
+    },
+    "POST /auth/refresh": {
+      "description": "Access token eskirganda yangisini beradi",
+      "body": { "refreshToken": "JWT" },
+      "response": { "accessToken": "NEW_JWT", "refreshToken": "JWT" }
+    },
+    "POST /auth/logout": {
+      "description": "Refresh tokenni bekor qiladi",
+      "body": { "refreshToken": "JWT" },
+      "response": { "message": "Logged out" }
+    },
+    "GET /auth/me": {
+      "description": "Token bo'yicha userni qaytaradi",
+      "headers": { "Authorization": "Bearer JWT" }
+    }
+  },
+  "users": {
+    "POST /users": {
+      "roles": ["HEAD creates TEACHER", "TEACHER creates STUDENT"],
+      "body": {
+        "firstName": "string",
+        "lastName": "string",
+        "group": "string (only STUDENT)",
+        "username": "string",
+        "password": "string",
+        "role": "TEACHER|STUDENT"
+      }
+    },
+    "GET /users": {
+      "description": "HEAD => barcha, TEACHER => faqat o'zi yaratgan talabalar",
+      "query": { "role": "optional", "group": "optional", "q": "optional" }
+    },
+    "GET /users/:id": { "description": "User details" },
+    "PUT /users/:id": { "description": "User update (HEAD/TEACHER cheklovlari bilan)" },
+    "DELETE /users/:id": { "description": "User delete (HEAD/TEACHER cheklovlari bilan)" },
+    "POST /users/:id/avatar": {
+      "description": "Avatar upload (multer image) => Supabase avatars bucket",
+      "multipart": true,
+      "field": "avatar (image/*)"
+    }
+  },
+  "profile": {
+    "PUT /profile/social": {
+      "role": "STUDENT",
+      "body": {
+        "github": "string",
+        "linkedin": "string",
+        "telegram": "string",
+        "instagram": "string",
+        "phone": "string"
+      }
+    },
+    "PUT /profile/password": {
+      "description": "Parolni o'zgartirish",
+      "body": { "currentPassword": "string", "newPassword": "string" }
+    }
+  },
+  "projects": {
+    "GET /projects/public": {
+      "description": "Ommaviy galereya (faqat APPROVED)",
+      "query": {
+        "group": "optional",
+        "year": "optional",
+        "tech": "optional",
+        "q": "optional search",
+        "page": 1,
+        "limit": 12
+      }
+    },
+    "POST /projects": {
+      "role": "STUDENT",
+      "description": "Loyiha yaratish + fayllarni Supabase projects bucket'ga yuklash",
+      "multipart": true,
+      "fields": {
+        "title": "string",
+        "description": "string",
+        "githubUrl": "string",
+        "technologies": "csv yoki string[]",
+        "year": "number"
+      },
+      "files": {
+        "images": "images[] (max 12)",
+        "files": "files[] (max 12)",
+        "presentation": "presentation (max 1)"
+      }
+    },
+    "GET /projects/me/list": { "role": "STUDENT", "description": "Talabaning loyihalari" },
+    "GET /projects/teacher/queue": { "role": "TEACHER", "description": "Biriktirilgan loyihalar" },
+    "POST /projects/:id/decision": {
+      "role": "TEACHER",
+      "description": "Loyihani APPROVED/REJECTED qilish + sharh/baho saqlash",
+      "body": {
+        "status": "APPROVED|REJECTED",
+        "comment": "string",
+        "recommendations": "string",
+        "score": "0-100"
+      }
+    },
+    "POST /projects/:projectId/assign": {
+      "role": "HEAD",
+      "description": "Loyihani ustozga biriktirish",
+      "body": { "teacherId": "mongoId" }
+    },
+    "GET /projects/:id": {
+      "description": "Project details + reviews + similar. Public faqat APPROVED, aks holda auth kerak"
+    },
+    "DELETE /projects/:id": {
+      "description": "STUDENT: faqat o'zining PENDING/REJECTED; TEACHER/HEAD: delete. Supabase fayllari ham o'chiriladi"
+    }
+  },
+  "stats": {
+    "GET /stats/dashboard": {
+      "roles": ["HEAD", "TEACHER"],
+      "description": "Talaba/ustoz soni, loyiha statuslari, top technologies"
+    }
+  }
+}
